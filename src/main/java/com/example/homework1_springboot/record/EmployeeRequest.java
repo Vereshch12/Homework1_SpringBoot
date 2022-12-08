@@ -34,6 +34,7 @@ public class EmployeeRequest {
         return salary;
     }
 
+
     public void setSalary(int salary) {
         this.salary = salary;
     }

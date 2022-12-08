@@ -1,10 +1,10 @@
 package com.example.homework1_springboot.model;
 
 public class Employee {
-    private final String name;
-    private final String lastname;
-    private final String departament;
-    private final int salary;
+    private String name;
+    private String lastname;
+    private String departament;
+    private int salary;
     private static int counter;
     private final int id;
 

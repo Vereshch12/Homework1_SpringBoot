@@ -1,5 +1,6 @@
 package com.example.homework1_springboot.controller;
 
+import com.example.homework1_springboot.exceptions.EmployeeException;
 import com.example.homework1_springboot.model.Employee;
 import com.example.homework1_springboot.record.EmployeeRequest;
 import com.example.homework1_springboot.service.EmployeeService;
@@ -25,7 +26,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
-    public Employee createEmployee(@RequestBody EmployeeRequest employeeRequest){
+    public Employee createEmployee(@RequestBody EmployeeRequest employeeRequest) throws EmployeeException {
         return this.employeeService.addEmployee(employeeRequest);
     }
 

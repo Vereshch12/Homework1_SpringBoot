@@ -1,8 +1,10 @@
 package com.example.homework1_springboot.service;
 
+import com.example.homework1_springboot.exceptions.EmployeeException;
 import com.example.homework1_springboot.model.Employee;
 import com.example.homework1_springboot.record.EmployeeRequest;
 import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -18,12 +20,17 @@ public class EmployeeService {
         return this.employees.values();
     }
 
-    public Employee addEmployee(EmployeeRequest employeeRequest){
-        if (employeeRequest.getName() == null || employeeRequest.getLastname() == null){
-            throw new IllegalArgumentException("У сотрудника нет имени или фамилии!");
-        }
-        Employee employee = new Employee(employeeRequest.getName(),
-                employeeRequest.getLastname(),
+    private boolean checkEmployee(String line){
+        return !StringUtils.isEmpty(line) && !StringUtils.isBlank(line);
+    }
+
+    public Employee addEmployee(EmployeeRequest employeeRequest) throws EmployeeException {
+        if (!checkEmployee(employeeRequest.getName())) throw new EmployeeException("У сотрудника нет имени!");
+        if (!checkEmployee(employeeRequest.getLastname())) throw new EmployeeException("У сотрудника нет фамилии!");
+        if (!checkEmployee(employeeRequest.getDepartament())) throw new EmployeeException("У сотрудника не указан отдел!");
+        if (employeeRequest.getSalary() <= 0) throw new EmployeeException("У сотрудника неправильно указана зарплата!");
+        Employee employee = new Employee(StringUtils.capitalize(employeeRequest.getName()),
+                StringUtils.capitalize(employeeRequest.getLastname()),
                 employeeRequest.getDepartament(),
                 employeeRequest.getSalary());
         this.employees.put(employee.getId(), employee);
