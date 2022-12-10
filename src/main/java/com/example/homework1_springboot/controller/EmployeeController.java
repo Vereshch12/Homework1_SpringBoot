@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -36,17 +37,17 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/salary/min")
-    public Stream<Employee> getEmployeesWithMinSalary(){
+    public List<Employee> getEmployeesWithMinSalary(){
         return this.employeeService.getEmployeesWithMinSalary();
     }
 
     @GetMapping("/employees/salary/max")
-    public Stream<Employee> getEmployeesWithMaxSalary(){
+    public List<Employee> getEmployeesWithMaxSalary(){
         return this.employeeService.getEmployeesWithMaxSalary();
     }
 
     @GetMapping("/employees/salary/moreThanAvarage")
-    public Stream<Employee> getEmployeesWhoEarnMoreThanAverageSalary(){
+    public List<Employee> getEmployeesWhoEarnMoreThanAverageSalary(){
         return this.employeeService.getEmployeesWhoEarnMoreThanAverageSalary();
     }
 }

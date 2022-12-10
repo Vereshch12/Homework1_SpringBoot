@@ -6,10 +6,8 @@ import com.example.homework1_springboot.record.EmployeeRequest;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -43,26 +41,29 @@ public class EmployeeService {
                 .sum();
     }
 
-    public Stream<Employee> getEmployeesWithMinSalary(){
+    public List<Employee> getEmployeesWithMinSalary(){
         int minSalary = employees.values().stream()
                 .min(Comparator.comparingInt(Employee::getSalary)).get().getSalary();
         return employees.values().stream()
-                .filter(e -> e.getSalary() == minSalary);
+                .filter(e -> e.getSalary() == minSalary)
+                .collect(Collectors.toList());
     }
 
-    public Stream<Employee> getEmployeesWithMaxSalary(){
+    public List<Employee> getEmployeesWithMaxSalary(){
         int maxSalary = employees.values().stream()
                 .max(Comparator.comparingInt(Employee::getSalary)).get().getSalary();
         return employees.values().stream()
-                .filter(e -> e.getSalary() == maxSalary);
+                .filter(e -> e.getSalary() == maxSalary)
+                .collect(Collectors.toList());
     }
 
-    public Stream<Employee> getEmployeesWhoEarnMoreThanAverageSalary(){
+    public List<Employee> getEmployeesWhoEarnMoreThanAverageSalary(){
         int averageSalary = (int) ((employees.values().stream()
                 .mapToInt(e -> e.getSalary())
                 .sum()) / (employees.values().stream()
                 .count()));
         return employees.values().stream()
-                .filter(e -> e.getSalary() > averageSalary);
+                .filter(e -> e.getSalary() > averageSalary)
+                .collect(Collectors.toList());
     }
 }
