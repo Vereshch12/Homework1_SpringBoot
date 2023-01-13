@@ -2,13 +2,11 @@ package com.example.homework1_springboot.service;
 
 import com.example.homework1_springboot.exceptions.EmployeeException;
 import com.example.homework1_springboot.model.Employee;
-import com.example.homework1_springboot.record.EmployeeRequest;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class EmployeeService {
@@ -22,15 +20,11 @@ public class EmployeeService {
         return !StringUtils.isEmpty(line) && !StringUtils.isBlank(line);
     }
 
-    public Employee addEmployee(EmployeeRequest employeeRequest) throws EmployeeException {
-        if (!checkEmployee(employeeRequest.getName())) throw new EmployeeException("У сотрудника нет имени!");
-        if (!checkEmployee(employeeRequest.getLastname())) throw new EmployeeException("У сотрудника нет фамилии!");
-        if (!checkEmployee(employeeRequest.getDepartament())) throw new EmployeeException("У сотрудника не указан отдел!");
-        if (employeeRequest.getSalary() <= 0) throw new EmployeeException("У сотрудника неправильно указана зарплата!");
-        Employee employee = new Employee(StringUtils.capitalize(employeeRequest.getName()),
-                StringUtils.capitalize(employeeRequest.getLastname()),
-                employeeRequest.getDepartament(),
-                employeeRequest.getSalary());
+    public Employee addEmployee(Employee employee) throws EmployeeException {
+        if (!checkEmployee(employee.getName())) throw new EmployeeException("У сотрудника нет имени!");
+        if (!checkEmployee(employee.getLastname())) throw new EmployeeException("У сотрудника нет фамилии!");
+        if (employee.getDepartament() == null) throw new EmployeeException("У сотрудника не указан отдел!");
+        if (employee.getSalary() <= 0) throw new EmployeeException("У сотрудника неправильно указана зарплата!");
         this.employees.put(employee.getId(), employee);
         return employee;
     }

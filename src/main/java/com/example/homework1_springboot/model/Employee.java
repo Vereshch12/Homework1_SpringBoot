@@ -3,12 +3,12 @@ package com.example.homework1_springboot.model;
 public class Employee {
     private String name;
     private String lastname;
-    private String departament;
+    private Integer departament;
     private int salary;
     private static int counter;
-    private final int id;
+    private final Integer id;
 
-    public Employee(String name, String lastname, String departament, int salary) {
+    public Employee(String name, String lastname, Integer departament, int salary) {
         this.name = name;
         this.lastname = lastname;
         this.departament = departament;
@@ -24,7 +24,7 @@ public class Employee {
         return lastname;
     }
 
-    public String getDepartament() {
+    public Integer getDepartament() {
         return departament;
     }
 
@@ -33,8 +33,24 @@ public class Employee {
     }
 
 
-    public int getId() {
+    public Integer getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setDepartament(Integer departament) {
+        this.departament = departament;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
     }
 
     @Override
