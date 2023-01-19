@@ -24,7 +24,7 @@ public class EmployeeService {
         if (!checkEmployee(employee.getName())) throw new EmployeeException("У сотрудника нет имени!");
         if (!checkEmployee(employee.getLastname())) throw new EmployeeException("У сотрудника нет фамилии!");
         if (employee.getDepartament() == null) throw new EmployeeException("У сотрудника не указан отдел!");
-        if (employee.getSalary() <= 0) throw new EmployeeException("У сотрудника неправильно указана зарплата!");
+        if (employee.getSalary() <= 0 || employee.getSalary() == null) throw new EmployeeException("У сотрудника неправильно указана зарплата!");
         this.employees.put(employee.getId(), employee);
         return employee;
     }
@@ -59,5 +59,18 @@ public class EmployeeService {
         return employees.values().stream()
                 .filter(e -> e.getSalary() > averageSalary)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeService that = (EmployeeService) o;
+        return Objects.equals(employees, that.employees);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(employees);
     }
 }

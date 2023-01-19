@@ -5,38 +5,29 @@ import com.example.homework1_springboot.model.Employee;
 import com.example.homework1_springboot.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTest {
-    @Mock
-    private EmployeeService employeeServiceForTest;
 
-    @Mock
+    private EmployeeService employeeServiceForTest = new EmployeeService();
+
     private Employee employee1 = new Employee ("testName1", "testSurname1", 1, 1000);
     private Employee employee2 = new Employee("testName2", "testSurname2", 2, 2000);
     private Employee employee3 = new Employee("testName3", "testSurname3", 3, 3000);
-    private Collection<Employee> actualEmployees = new ArrayList<>();
+    private Collection<Employee> actualEmployees;
+
 
     @BeforeEach
-    public void setUp(){
-        employee1 = new Employee("testName1", "testSurname1", 1, 1000);
-        actualEmployees.add(employee1);
-        actualEmployees.add(employee2);
-        actualEmployees.add(employee3);
-        when(employeeServiceForTest.getAllEmployees()).thenReturn(actualEmployees);
+    public void setUp() throws EmployeeException {
+        actualEmployees = new ArrayList<>(List.of(employee1,employee2,employee3));
+        employeeServiceForTest.addEmployee(employee1);
+        employeeServiceForTest.addEmployee(employee2);
+        employeeServiceForTest.addEmployee(employee3);
     }
 
     @Test
@@ -47,30 +38,86 @@ public class EmployeeServiceTest {
 
     @Test //Когда нет ошибок
     public void addEmployeeTest1 () throws EmployeeException {
-        EmployeeService employeeServiceTest = new EmployeeService();
         Employee actualEmployee = employee1;
-        Employee employee = new Employee(actualEmployee.getName(), actualEmployee.getLastname(), actualEmployee.getDepartament(), actualEmployee.getSalary());
-        Employee expectedEmployee = employeeServiceTest.addEmployee(employee);
-        when(employee1.getId()).thenReturn(3);
+        Employee expectedEmployee = employeeServiceForTest.addEmployee(employee1);
         assertEquals(expectedEmployee, actualEmployee);
     }
 
     @Test //Ошибка нет имени
-    public void addEmployeeTest2 () throws EmployeeException {
+    public void addEmployeeTest2 (){
         EmployeeService employeeServiceTest = new EmployeeService();
         Employee actualEmployee = new Employee("", "123", 4, 1000);
-        assertThrows(EmployeeException.class,() -> employeeServiceTest.addEmployee(actualEmployee));
+        EmployeeException thrown = assertThrows(EmployeeException.class, () -> employeeServiceTest.addEmployee(actualEmployee), "Expected doThing() to throw, but it didn't"
+        );
+        assertTrue(thrown.getMessage().contentEquals("У сотрудника нет имени!"));
     }
+
+    @Test //Ошибка нет фамилии
+    public void addEmployeeTest3 (){
+        EmployeeService employeeServiceTest = new EmployeeService();
+        Employee actualEmployee = new Employee("123", "   ", 4, 1000);
+        EmployeeException thrown = assertThrows(EmployeeException.class, () -> employeeServiceTest.addEmployee(actualEmployee), "Expected doThing() to throw, but it didn't"
+        );
+        assertTrue(thrown.getMessage().contentEquals("У сотрудника нет фамилии!"));
+    }
+
+    @Test //Ошибка нет отдела
+    public void addEmployeeTest4 (){
+        EmployeeService employeeServiceTest = new EmployeeService();
+        Employee actualEmployee = new Employee("123", "212", null, 1000);
+        EmployeeException thrown = assertThrows(EmployeeException.class, () -> employeeServiceTest.addEmployee(actualEmployee), "Expected doThing() to throw, but it didn't"
+        );
+        assertTrue(thrown.getMessage().contentEquals("У сотрудника не указан отдел!"));
+    }
+
+    @Test //Ошибка неверно указана зарплата или ее нет
+    public void addEmployeeTest5 (){
+        EmployeeService employeeServiceTest = new EmployeeService();
+        Employee actualEmployee = new Employee("123", "212", 2, -89);
+        EmployeeException thrown = assertThrows(EmployeeException.class, () -> employeeServiceTest.addEmployee(actualEmployee), "Expected doThing() to throw, but it didn't"
+        );
+        assertTrue(thrown.getMessage().contentEquals("У сотрудника неправильно указана зарплата!"));
+    }
+
     @Test
-    public void getEmployeesWithMinSalaryTest () {
-        int minSalary = actualEmployees.stream()
-                .min(Comparator.comparingInt(Employee::getSalary)).get().getSalary();
-        List<Employee> expected =  actualEmployees.stream()
-                .filter(e -> e.getSalary() == minSalary)
-                .collect(Collectors.toList());
-        List<Employee> actual = employeeServiceForTest.getEmployeesWithMinSalary();
-        assertEquals(expected, actual);
+    public void getSalarySumTest (){
+        Integer actual = employee1.getSalary() + employee2.getSalary() + employee3.getSalary();
+        Integer expected = employeeServiceForTest.getSalarySum();
+        assertEquals(actual, expected);
     }
+
+    @Test
+    public void getEmployeesWithMinSalaryTest() throws EmployeeException {
+        Employee employeeForTest = new Employee("kdcdl", "cmkd", 4, 1000);
+        List<Employee> expected = new ArrayList<>();
+        expected.add(employee1);
+        expected.add(employeeForTest);
+        employeeServiceForTest.addEmployee(employeeForTest);
+        List<Employee> actual = employeeServiceForTest.getEmployeesWithMinSalary();
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void getEmployeesWithMaxSalaryTest() throws EmployeeException {
+        Employee employeeForTest = new Employee("kdcdl", "cmkd", 4, 3000);
+        List<Employee> expected = new ArrayList<>();
+        expected.add(employee3);
+        expected.add(employeeForTest);
+        employeeServiceForTest.addEmployee(employeeForTest);
+        List<Employee> actual = employeeServiceForTest.getEmployeesWithMaxSalary();
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void getEmployeesWhoEarnMoreThanAverageSalary() throws EmployeeException {
+        List<Employee> expected = new ArrayList<>();
+        expected.add(employee3);
+        List<Employee> actual = employeeServiceForTest.getEmployeesWhoEarnMoreThanAverageSalary();
+        assertEquals(actual, expected);
+    }
+
+
+
 
 
 }

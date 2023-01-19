@@ -1,14 +1,16 @@
 package com.example.homework1_springboot.model;
 
+import java.util.Objects;
+
 public class Employee {
     private String name;
     private String lastname;
     private Integer departament;
-    private int salary;
+    private Integer salary;
     private static int counter;
     private final Integer id;
 
-    public Employee(String name, String lastname, Integer departament, int salary) {
+    public Employee(String name, String lastname, Integer departament, Integer salary) {
         this.name = name;
         this.lastname = lastname;
         this.departament = departament;
@@ -28,7 +30,7 @@ public class Employee {
         return departament;
     }
 
-    public int getSalary() {
+    public Integer getSalary() {
         return salary;
     }
 
@@ -51,6 +53,19 @@ public class Employee {
 
     public void setSalary(int salary) {
         this.salary = salary;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(name, employee.name) && Objects.equals(lastname, employee.lastname) && Objects.equals(departament, employee.departament) && Objects.equals(salary, employee.salary) && Objects.equals(id, employee.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, lastname, departament, salary, id);
     }
 
     @Override
